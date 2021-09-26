@@ -1,0 +1,46 @@
+﻿<Window x:Class="Scheduler.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Scheduler"
+        mc:Ignorable="d"
+        Title="Scheduler" Height="450" MinWidth="550" Width="550" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <DatePicker Name="DatePicker" HorizontalAlignment="Left" Margin="30,39,0,0" VerticalAlignment="Top" Width="150"/>
+        <TextBox Text="4" Name="NumberOfParticipants" HorizontalAlignment="Left" Margin="204,39,0,0" TextChanged="Typing" TextWrapping="Wrap" VerticalAlignment="Top" Width="136" Height="24" />
+        <Label Content="Number of participants" HorizontalAlignment="Left" Margin="204,10,0,0" VerticalAlignment="Top" Width="136"/>
+        <TextBox Name="MeetingDurationHours" HorizontalAlignment="Left" Height="25" Margin="384,39,0,0" TextChanged="Typing" Text="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="25"/>
+        <Label Content=":" HorizontalAlignment="Left" Margin="414,38,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="MeetingDurationMinutes" HorizontalAlignment="Left" Height="25" Margin="432,39,0,0" TextChanged="Typing" Text="00" TextWrapping="Wrap" VerticalAlignment="Top" Width="25
+                 "/>
+        <Label Content="Duration (max 8 hours)" HorizontalAlignment="Left" Margin="380,10,0,0" VerticalAlignment="Top" Width="136"/>
+        <Button Name="SearchBtn" Content="Search" VerticalAlignment="Top" HorizontalAlignment="Center"  Width="136" Margin="0,100,0,0" Click="Search_Click"/>
+        <Label Content="Meeting date" HorizontalAlignment="Left" Margin="30,10,0,0" VerticalAlignment="Top" />
+        <DataGrid Name="ResultsGrid" Margin="10,150,10,10" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" ColumnWidth="*">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Room">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding RoomName}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Available">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding AvailabilityDisplayText}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Select">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Select Room" Name="SelectRoom" Tag="{Binding}" Click="SelectRoom_Click"></Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>
