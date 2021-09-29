@@ -62,7 +62,7 @@ namespace Scheduler.Services
             return searchResults;
         }
 
-        public void AddScheduleToRoom(string roomName, DateTime from, DateTime to)
+        public void BookRoom(string roomName, DateTime from, DateTime to)
         {
             if (string.IsNullOrWhiteSpace(roomName))
             {

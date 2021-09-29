@@ -8,6 +8,6 @@ namespace Scheduler.Services
     {
         IEnumerable<RoomSearchAvailableSlotsResult> Search(SearchAvailableRoomsFilter filter);
 
-        void AddScheduleToRoom(string roomName, DateTime from, DateTime to);
+        void BookRoom(string roomName, DateTime from, DateTime to);
     }
 }

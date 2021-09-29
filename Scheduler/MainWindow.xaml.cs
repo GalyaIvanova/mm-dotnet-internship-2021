@@ -60,18 +60,27 @@ namespace Scheduler
 
         private void HandleMeetingDurationInputValid()
         {
-            if (!int.TryParse(MeetingDurationHours?.Text, out int meetingDurationHours) ||
-                !int.TryParse(MeetingDurationMinutes?.Text, out int meetingDurationMinutes))
+            bool validHours = int.TryParse(MeetingDurationHours?.Text, out int meetingDurationHours);
+            bool validMinutes = int.TryParse(MeetingDurationMinutes?.Text, out int meetingDurationMinutes);
+
+            if (!validHours)
             {
+                ResetDuratonFieldToZero(MeetingDurationHours);
+                return;
+            }
+
+            if (!validMinutes)
+            {
+                ResetDuratonFieldToZero(MeetingDurationMinutes);
                 return;
             }
 
             TimeSpan durationInMinutes = TimeSpan.FromMinutes(meetingDurationHours * 60 + meetingDurationMinutes);
 
-            if (durationInMinutes.TotalHours > 8.0 || meetingDurationMinutes > 59)
+            if (durationInMinutes.TotalHours > 8.0 || meetingDurationMinutes > 59 || durationInMinutes == TimeSpan.Zero)
             {
-                MeetingDurationHours.Text = "00";
-                MeetingDurationMinutes.Text = "00";
+                ResetDuratonFieldToZero(MeetingDurationHours);
+                ResetDuratonFieldToZero(MeetingDurationMinutes);
                 return;
             }
         }
@@ -84,6 +93,14 @@ namespace Scheduler
                 return;
             }
 
+            if (!int.TryParse(MeetingDurationHours.Text, out int meetingDurationHours) ||
+                !int.TryParse(MeetingDurationMinutes.Text, out int meetingDurationMinutes) ||
+                meetingDurationHours + meetingDurationMinutes <= 0)
+            {
+                MessageBox.Show("Please enter a valid meeting duration");
+                return;
+            }
+
             meetingDate = DatePicker.SelectedDate.Value;
 
             var roomsAvailability = roomsScheduleService.Search(new SearchAvailableRoomsFilter(meetingDate, numberOfParticipants, new TimeSpan(int.Parse(MeetingDurationHours.Text), int.Parse(MeetingDurationMinutes.Text), 0)));
@@ -93,9 +110,23 @@ namespace Scheduler
         private void SelectRoom_Click(object sender, RoutedEventArgs e)
         {
             RoomSearchAvailableSlotsResult availability = (sender as Button).Tag as RoomSearchAvailableSlotsResult;
-            roomsScheduleService.AddScheduleToRoom(availability.RoomName, meetingDate.Add(availability.From), meetingDate.Add(availability.To));
+            DateTime startDateTime = meetingDate.Add(availability.From);
+            DateTime endDateTime = meetingDate.Add(availability.To);
+
+            roomsScheduleService.BookRoom(availability.RoomName, startDateTime, endDateTime);
 
             Search();
+
+            MessageBox.Show($"Room ({availability.RoomName}) is booked on {startDateTime.ToString("dd.MM.yyyy")} between {startDateTime.ToString("HH\\:mm")} and {endDateTime.ToString("HH\\:mm")}");
+        }
+
+        private void ResetDuratonFieldToZero(TextBox textBox)
+        {
+            if (textBox != null)
+            {
+                textBox.Text = "00";
+                textBox.SelectAll();
+            }
         }
     }
 }
